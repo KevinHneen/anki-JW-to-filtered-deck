@@ -1,4 +1,4 @@
-# JW Question IDs to Filtered Decks
+# UWorld Question IDs to Filtered Decks
 #
 # Copyright (C) 2022  Sachin Govind
 # This is not my idea. There are existing addons that perform similar functionality - this addon is my implementation of that idea.
@@ -29,12 +29,12 @@ from typing import Iterable
 import re
 
 config = mw.addonManager.getConfig(__name__)
-JWTags = {}
+uworldTags = {}
 
 
-def updateJWTags():
+def updateUworldTags():
     # if we already gathered them, we're done
-    if len(JWTags) > 0:
+    if len(uworldTags) > 0:
         return
 
     col = collection()
@@ -59,7 +59,7 @@ def updateJWTags():
             if not qid.isnumeric():
                 continue
             qid = int(qid)
-            JWTags[str(qid)] = tagName
+            uworldTags[str(qid)] = tagName
 
 
 def collection():
@@ -70,7 +70,7 @@ def collection():
     return collection
 
 
-def _createFilteredDeckForJWQuestion(qid, fullTagName, parentDeckPath):
+def _createFilteredDeckForUWorldQuestion(qid, fullTagName, parentDeckPath):
     if not fullTagName or len(fullTagName) < 2:
         return
 
@@ -99,7 +99,7 @@ def _createFilteredDeckForJWQuestion(qid, fullTagName, parentDeckPath):
     col.sched.rebuildDyn(did)
 
 
-def _addJWFilteredDecks():
+def _addUWorldFilteredDecks():
     qids, ok = QInputDialog.getText(
         mw, "JW Questions", "Enter a comma-separated list of JW question IDs: ")
 
@@ -114,20 +114,20 @@ def _addJWFilteredDecks():
     parsedQids = [qid for qid in parsedQids if len(
         qid) > 0 and qid.isnumeric()]
 
-    # build the JW tags array if it hasn't already been done
-    updateJWTags()
+    # build the UWorld tags array if it hasn't already been done
+    updateUworldTags()
 
     missedQids = []
     for qid in parsedQids:
-        if str(qid) not in JWTags:
+        if str(qid) not in uworldTags:
             missedQids.append(str(qid))
             continue
-        tag = JWTags[qid]
+        tag = uworldTags[qid]
         if not tag:
             missedQids.append(str(qid))
             continue
 
-        _createFilteredDeckForJWQuestion(qid, tag, "JW")
+        _createFilteredDeckForUWorldQuestion(qid, tag, "UWorld")
 
     mw.reset()
     if len(missedQids) > 0:
@@ -136,11 +136,11 @@ def _addJWFilteredDecks():
         tooltip("Created filtered decks for all JW questions")
 
 
-def _addJWFilteredDecksToTools():
+def _addUWorldFilteredDecksToTools():
     # Add our functions to the tools menu
     action = QAction("JW Filtered Decks", mw)
-    qconnect(action.triggered, _addJWFilteredDecks)
+    qconnect(action.triggered, _addUWorldFilteredDecks)
     mw.form.menuTools.addAction(action)
 
 
-_addJWFilteredDecksToTools()
+_addUWorldFilteredDecksToTools()
