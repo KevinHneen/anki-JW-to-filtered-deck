@@ -53,7 +53,7 @@ def updateUworldTags():
 
     for nodePair in leafNodes:
         tagName = nodePair[1]
-        if "::#UWorld::" in tagName:
+        if "::#JW::" in tagName:
             # parse qid
             qid = tagName.split("::")[-1]
             if not qid.isnumeric():
@@ -76,7 +76,7 @@ def _createFilteredDeckForUWorldQuestion(qid, fullTagName, parentDeckPath):
 
     col = collection()
     search = col.build_search_string(SearchNode(tag=fullTagName))
-    deckName = "UWorld #%s" % qid
+    deckName = "JW #%s" % qid
     if len(parentDeckPath) > 0:
         deckName = parentDeckPath + "::" + deckName
     numberCards = 300
